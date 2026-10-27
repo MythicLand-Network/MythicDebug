@@ -1,0 +1,58 @@
+plugins {
+    id 'java'
+    id 'idea'
+}
+
+idea.module.name = name
+group = 'cn.mythicland'
+version = '1.0.0'
+
+apply from: '../MythicFramework/gradle/spigot-1.8.8.gradle'
+
+repositories {
+    mavenCentral()
+}
+
+java {
+    toolchain { languageVersion = JavaLanguageVersion.of(21) }
+}
+
+dependencies {
+    implementation('cn.mythicland:mythic-framework-core:1.0.0') { transitive = false }
+    implementation('cn.mythicland:mythic-framework-bukkit:1.0.0') { transitive = false }
+    implementation 'com.google.code.gson:gson:2.11.0'
+    compileOnly files(spigot188Jar)
+    testImplementation 'junit:junit:4.13.2'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release.set(21)
+    dependsOn tasks.named('prepareSpigot188')
+}
+
+processResources {
+    inputs.property 'version', project.version
+    filesMatching('plugin.yml') { expand(version: project.version) }
+}
+
+jar {
+    archiveFileName = 'MythicDebug.jar'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from {
+        configurations.runtimeClasspath.collect { zipTree(it) }
+    } {
+        include 'cn/mythicland/framework/diagnostics/**'
+        include 'cn/mythicland/framework/bukkit/diagnostics/**'
+        include 'cn/mythicland/framework/command/**'
+        include 'cn/mythicland/framework/bukkit/BukkitRegistration.class'
+        include 'cn/mythicland/framework/bukkit/CommandComponent.class'
+        include 'cn/mythicland/framework/component/ComponentResolver.class'
+        include 'cn/mythicland/framework/component/ComponentArguments.class'
+        include 'cn/mythicland/framework/component/ComponentRole.class'
+        include 'cn/mythicland/framework/component/ComponentScope.class'
+        include 'cn/mythicland/framework/component/InjectComponent.class'
+        include 'com/google/gson/**'
+    }
+    exclude 'META-INF/*.SF', 'META-INF/*.RSA', 'META-INF/*.DSA', 'module-info.class'
+}

@@ -1,0 +1,7 @@
+duration-seconds: 1800
+segment-mib: 32
+session-mib: 512
+directory-mib: 2048
+minimum-free-mib: 512
+queue-capacity: 256
+history-mib: 16

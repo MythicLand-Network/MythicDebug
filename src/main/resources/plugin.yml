@@ -1,0 +1,11 @@
+name: MythicDebug
+version: '${version}'
+main: cn.mythicland.mythicdebug.MythicDebug
+depend: [ProtocolLib]
+commands:
+  mdebug:
+    description: Combat diagnostic recording
+    usage: /mdebug <start|watch|stop|status|mark|help>
+permissions:
+  mythicdebug.admin:
+    default: op
